@@ -21,6 +21,16 @@ func main() {
 		return
 	}
 
+	if len(os.Args) >= 2 && (os.Args[1] == "--init-config") {
+		initConfig()
+		return
+	}
+
+	if len(os.Args) >= 2 && (os.Args[1] == "--config-path") {
+		fmt.Printf("Config file location: %s\n", getConfigPath())
+		return
+	}
+
 	var content []byte
 
 	switch len(os.Args) {
@@ -71,6 +81,33 @@ func exitError(err error) {
 	os.Exit(1)
 }
 
+func initConfig() {
+	config := DefaultConfig()
+	configPath := getConfigPath()
+	
+	// Check if config already exists
+	if _, err := os.Stat(configPath); err == nil {
+		fmt.Printf("Config file already exists at: %s\n", configPath)
+		fmt.Println("To regenerate, please delete the existing file first.")
+		return
+	}
+	
+	// Save the default config
+	if err := config.Save(); err != nil {
+		exitError(fmt.Errorf("failed to create config file: %w", err))
+	}
+	
+	fmt.Printf("Created default config file at: %s\n", configPath)
+	fmt.Println("You can now edit this file to customize colors.")
+	fmt.Println("\nExample color values:")
+	fmt.Println("  \"#ff0000\" - Red")
+	fmt.Println("  \"#00ff00\" - Green")
+	fmt.Println("  \"#0000ff\" - Blue")
+	fmt.Println("  \"#ffff00\" - Yellow")
+	fmt.Println("  \"#ff00ff\" - Magenta")
+	fmt.Println("  \"#00ffff\" - Cyan")
+}
+
 const renderView = "render"
 const searchView = "search"
 const statusView = "status"
@@ -91,12 +128,22 @@ type ui struct {
 	search          *SearchState
 	renderedContent []byte
 	searchActive    bool
+	
+	// configuration
+	config          *Config
 }
 
 func newUi(g *gocui.Gui) (*ui, error) {
+	config, err := LoadConfig()
+	if err != nil {
+		// Use default config if loading fails
+		config = DefaultConfig()
+	}
+	
 	result := &ui{
 		width:  -1,
 		search: NewSearchState(),
+		config: config,
 	}
 
 	g.SetManagerFunc(result.layout)
@@ -249,10 +296,8 @@ func (ui *ui) layout(g *gocui.Gui) error {
 func (ui *ui) render(g *gocui.Gui) []byte {
 	maxX, _ := g.Size()
 
-	opts := []markdown.Options{
-		// needed when going through gocui
-		markdown.WithImageDithering(markdown.DitheringWithBlocks),
-	}
+	// Get options from config, plus required options
+	opts := ui.config.GetMarkdownOptions()
 
 	rendered := markdown.Render(ui.raw, maxX-1-padding, padding, opts...)
 	ui.lines = 0

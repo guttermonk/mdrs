@@ -14,6 +14,7 @@ type SearchState struct {
 	matches       []SearchMatch
 	currentIndex  int
 	caseSensitive bool
+	config        *Config
 }
 
 // SearchMatch represents a single search match
@@ -25,12 +26,14 @@ type SearchMatch struct {
 
 // NewSearchState creates a new search state
 func NewSearchState() *SearchState {
+	config, _ := LoadConfig() // Load config, use defaults if error
 	return &SearchState{
 		active:        false,
 		term:          "",
 		matches:       []SearchMatch{},
 		currentIndex:  -1,
 		caseSensitive: false,
+		config:        config,
 	}
 }
 
@@ -182,16 +185,27 @@ func (s *SearchState) HighlightContent(content []byte) []byte {
 			}
 			
 			// Add highlighted match
+			matchText := line[match.column : match.column+len(s.term)]
 			if isCurrentMatch {
-				// Current match - bright yellow background with black text
-				newLine.WriteString("\033[43;30m")
-				newLine.WriteString(line[match.column : match.column+len(s.term)])
-				newLine.WriteString("\033[0m")
+				// Current match - use config colors
+				if s.config != nil {
+					newLine.WriteString(s.config.ApplySearchHighlight(matchText, true))
+				} else {
+					// Fallback to default colors
+					newLine.WriteString("\033[43;30m")
+					newLine.WriteString(matchText)
+					newLine.WriteString("\033[0m")
+				}
 			} else {
-				// Other matches - yellow text
-				newLine.WriteString("\033[33m")
-				newLine.WriteString(line[match.column : match.column+len(s.term)])
-				newLine.WriteString("\033[0m")
+				// Other matches - use config colors
+				if s.config != nil {
+					newLine.WriteString(s.config.ApplySearchHighlight(matchText, false))
+				} else {
+					// Fallback to default colors
+					newLine.WriteString("\033[33m")
+					newLine.WriteString(matchText)
+					newLine.WriteString("\033[0m")
+				}
 			}
 			
 			lastEnd = match.column + len(s.term)

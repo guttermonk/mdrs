@@ -11,6 +11,7 @@ A standalone Markdown renderer for the terminal with integrated search functiona
 - 🔍 **Full-text search** with highlighting (Ctrl+F)
 - ⌨️ Vim-like keybindings with Colemak-DH support
 - 🎨 Syntax highlighting for code blocks
+- 🎨 **Customizable colors** via configuration file
 - 📊 Table rendering support
 - ❄️ Native NixOS support with flakes
 
@@ -48,6 +49,7 @@ go build
 mdrs README.md                  # Render a markdown file
 mdrs < file.md                  # Read from stdin
 curl example.com/file.md | mdrs # Pipe from network
+mdrs --init-config              # Create default config file
 ```
 
 ## Keybindings
@@ -75,6 +77,51 @@ curl example.com/file.md | mdrs # Pipe from network
 | `ESC` | Clear search/Cancel |
 
 Search highlights all matches (current match in bright yellow, others in yellow text) and shows match count in the status bar. Press `ESC` after searching to clear all highlighting and exit search mode.
+
+## Configuration
+
+Customize colors by creating a config file at `~/.config/mdrs/config.json`:
+
+```bash
+mdrs --init-config      # Create default config
+mdrs --config-path      # Show config location
+```
+
+### Color Customization
+
+All colors are specified as hex values (e.g., `#ff0000`). Configurable elements include:
+- **Headings**: `heading1` through `heading6`  
+- **Text**: `bold`, `italic`, `strikethrough`
+- **Code**: `code`, `code_block`, `code_block_bg`
+- **Links**: `link`, `link_url`
+- **Lists**: `list_marker`, `task_checked`, `task_unchecked`
+- **Layout**: `blockquote`, `table_header`, `table_row`, `table_border`
+- **Search**: `search_current`, `search_match`
+
+### Pre-built Themes
+
+Copy a theme to your config:
+```bash
+# Dracula theme
+cp themes/dracula.json ~/.config/mdrs/config.json
+
+# Solarized Dark theme  
+cp themes/solarized-dark.json ~/.config/mdrs/config.json
+```
+
+Example theme structure:
+```json
+{
+  "colors": {
+    "heading1": "#bd93f9",
+    "bold": "#f8f8f2",
+    "code": "#50fa7b",
+    "link": "#8be9fd"
+  }
+}
+```
+
+**Note**: Colors are converted to the nearest ANSI 256 color for terminal display.
 
 ## Development
 
