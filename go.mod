@@ -1,4 +1,4 @@
-module github.com/MichaelMure/mdr
+module github.com/MichaelMure/mdrs
 
 go 1.12
 

@@ -23,6 +23,6 @@ deploy:
   file_glob: true
   file: dist/**/*
   on:
-    repo: MichaelMure/mdr
+    repo: MichaelMure/mdrs
     go: 1.12
     tags: true

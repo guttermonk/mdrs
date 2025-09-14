@@ -14,4 +14,18 @@
 .idea
 vendor/
 dist/
-mdr
+mdrs
+
+# Nix-related files
+result
+result-*
+.direnv/
+.devenv*
+devenv.local.nix
+
+# Editor directories and files
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store

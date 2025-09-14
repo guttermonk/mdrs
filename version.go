@@ -22,9 +22,9 @@ func printVersion() {
 	}
 
 	if GitCommit == "" {
-		fmt.Println("mdr version: unknown (not compiled with the makefile)")
+		fmt.Println("mdrs version: unknown (not compiled with the makefile)")
 	} else {
-		fmt.Printf("mdr version: %s\n", version)
+		fmt.Printf("mdrs version: %s\n", version)
 	}
 
 	fmt.Printf("System version: %s/%s\n", runtime.GOARCH, runtime.GOOS)
