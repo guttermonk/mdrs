@@ -1,8 +1,7 @@
 # mdrs - Markdown Renderer & Search
 
-[![Build Status](https://travis-ci.org/guttermonk/mdrs.svg?branch=master)](https://travis-ci.org/guttermonk/mdrs)
-[![Go Report Card](https://goreportcard.com/badge/github.com/guttermonk/mdrs)](https://goreportcard.com/report/github.com/guttermonk/mdrs)
 [![GitHub license](https://img.shields.io/github/license/guttermonk/mdrs.svg)](https://github.com/guttermonk/mdrs/blob/master/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/guttermonk/mdrs?style=for-the-badge)](https://github.com/guttermonk/mdrs/stargazers)
 
 A standalone Markdown renderer for the terminal with integrated search functionality.
 
