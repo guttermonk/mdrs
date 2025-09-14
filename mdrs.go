@@ -147,52 +147,42 @@ func newUi(g *gocui.Gui) (*ui, error) {
 		width:  -1,
 		search: NewSearchState(),
 		config: config,
-		help:   newHelpPopup(),
+		help:   newHelpPopup(config),
 	}
 
 	g.SetManagerFunc(result.layout)
 	g.Cursor = false
 	g.InputEsc = true
 
-	result.keybindings = []keybinding{
-		// General keybindings
-		{"", gocui.KeyCtrlC, gocui.ModNone, result.quit},
-		{renderView, 'q', gocui.ModNone, result.quit},
-		
-		// Navigation keybindings (Vim and Colemak-DH)
-		{renderView, 'k', gocui.ModNone, result.up},
-		{renderView, 'i', gocui.ModNone, result.up},  // Colemak-DH
-		{renderView, gocui.KeyCtrlP, gocui.ModNone, result.up},
-		{renderView, gocui.KeyArrowUp, gocui.ModNone, result.up},
-		{renderView, 'j', gocui.ModNone, result.down},
-		{renderView, 'e', gocui.ModNone, result.down},  // Colemak-DH
-		{renderView, gocui.KeyCtrlN, gocui.ModNone, result.down},
-		{renderView, gocui.KeyArrowDown, gocui.ModNone, result.down},
-		{renderView, 'h', gocui.ModNone, result.left},
-		{renderView, gocui.KeyArrowLeft, gocui.ModNone, result.left},
-		{renderView, 'l', gocui.ModNone, result.right},
-		{renderView, 'o', gocui.ModNone, result.right},  // Colemak-DH
-		{renderView, gocui.KeyArrowRight, gocui.ModNone, result.right},
-		{renderView, gocui.KeyPgup, gocui.ModNone, result.pageUp},
-		{renderView, gocui.KeyPgdn, gocui.ModNone, result.pageDown},
-		{renderView, gocui.KeySpace, gocui.ModNone, result.pageDown},
-		{renderView, 'g', gocui.ModNone, result.goToTop},
-		{renderView, 'G', gocui.ModNone, result.goToBottom},
-		
-		// Search keybindings
-		{renderView, gocui.KeyCtrlF, gocui.ModNone, result.startSearch},
-		{renderView, '/', gocui.ModNone, result.startSearch},
-		{renderView, 'n', gocui.ModNone, result.nextMatch},
-		{renderView, 'N', gocui.ModNone, result.prevMatch},
-		{renderView, gocui.KeyEsc, gocui.ModNone, result.clearSearch},
-		{searchView, gocui.KeyEnter, gocui.ModNone, result.executeSearch},
-		{searchView, gocui.KeyEsc, gocui.ModNone, result.cancelSearch},
-		{searchView, gocui.KeyCtrlC, gocui.ModNone, result.cancelSearch},
-		{searchView, gocui.KeyCtrlG, gocui.ModNone, result.cancelSearch},
-		
-		// Help keybinding
-		{renderView, '?', gocui.ModNone, result.showHelp},
-	}
+	// Build keybindings from config
+	result.keybindings = []keybinding{}
+	
+	// Navigation keybindings
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings(renderView, result.config.Keybindings.ScrollUp, result.up)...)
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings(renderView, result.config.Keybindings.ScrollDown, result.down)...)
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings(renderView, result.config.Keybindings.ScrollLeft, result.left)...)
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings(renderView, result.config.Keybindings.ScrollRight, result.right)...)
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings(renderView, result.config.Keybindings.PageUp, result.pageUp)...)
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings(renderView, result.config.Keybindings.PageDown, result.pageDown)...)
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings(renderView, result.config.Keybindings.GoToTop, result.goToTop)...)
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings(renderView, result.config.Keybindings.GoToBottom, result.goToBottom)...)
+	
+	// Search keybindings
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings(renderView, result.config.Keybindings.StartSearch, result.startSearch)...)
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings(renderView, result.config.Keybindings.NextMatch, result.nextMatch)...)
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings(renderView, result.config.Keybindings.PrevMatch, result.prevMatch)...)
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings(renderView, result.config.Keybindings.ClearSearch, result.clearSearch)...)
+	
+	// General keybindings
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings(renderView, result.config.Keybindings.Quit, result.quit)...)
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings("", result.config.Keybindings.Quit, result.quit)...)  // Global quit
+	result.keybindings = append(result.keybindings, createKeybindingsFromStrings(renderView, result.config.Keybindings.ShowHelp, result.showHelp)...)
+	
+	// Search view specific keybindings (always fixed)
+	result.keybindings = append(result.keybindings, keybinding{searchView, gocui.KeyEnter, gocui.ModNone, result.executeSearch})
+	result.keybindings = append(result.keybindings, keybinding{searchView, gocui.KeyEsc, gocui.ModNone, result.cancelSearch})
+	result.keybindings = append(result.keybindings, keybinding{searchView, gocui.KeyCtrlC, gocui.ModNone, result.cancelSearch})
+	result.keybindings = append(result.keybindings, keybinding{searchView, gocui.KeyCtrlG, gocui.ModNone, result.cancelSearch})
 	
 	// Register help popup keybindings
 	if err := result.help.keybindings(g); err != nil {

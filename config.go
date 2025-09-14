@@ -14,7 +14,31 @@ import (
 
 // Config holds the configuration for mdrs
 type Config struct {
-	Colors ColorConfig `json:"colors"`
+	Colors     ColorConfig     `json:"colors"`
+	Keybindings KeybindingConfig `json:"keybindings"`
+}
+
+// KeybindingConfig holds custom keybinding settings
+type KeybindingConfig struct {
+	// Navigation keys
+	ScrollUp       []string `json:"scroll_up"`
+	ScrollDown     []string `json:"scroll_down"`
+	ScrollLeft     []string `json:"scroll_left"`
+	ScrollRight    []string `json:"scroll_right"`
+	PageUp         []string `json:"page_up"`
+	PageDown       []string `json:"page_down"`
+	GoToTop        []string `json:"go_to_top"`
+	GoToBottom     []string `json:"go_to_bottom"`
+	
+	// Search keys
+	StartSearch    []string `json:"start_search"`
+	NextMatch      []string `json:"next_match"`
+	PrevMatch      []string `json:"prev_match"`
+	ClearSearch    []string `json:"clear_search"`
+	
+	// General keys
+	Quit           []string `json:"quit"`
+	ShowHelp       []string `json:"show_help"`
 }
 
 // ColorConfig holds color settings for markdown elements
@@ -58,6 +82,27 @@ type ColorConfig struct {
 // DefaultConfig returns the default configuration
 func DefaultConfig() *Config {
 	return &Config{
+		Keybindings: KeybindingConfig{
+			// Navigation - supports both Vim and Colemak-DH
+			ScrollUp:    []string{"k", "i", "Up", "C-p"},
+			ScrollDown:  []string{"j", "e", "Down", "C-n"},
+			ScrollLeft:  []string{"h", "Left"},
+			ScrollRight: []string{"l", "o", "Right"},
+			PageUp:      []string{"PageUp"},
+			PageDown:    []string{"PageDown", "Space"},
+			GoToTop:     []string{"g"},
+			GoToBottom:  []string{"G"},
+			
+			// Search
+			StartSearch: []string{"/", "C-f"},
+			NextMatch:   []string{"n"},
+			PrevMatch:   []string{"N"},
+			ClearSearch: []string{"Escape"},
+			
+			// General
+			Quit:        []string{"q", "C-c"},
+			ShowHelp:    []string{"?"},
+		},
 		Colors: ColorConfig{
 			// Headings - blue shades
 			Heading1:       "#00d7ff",
@@ -156,6 +201,22 @@ func (c *Config) Save() error {
 // fillDefaults fills in any missing configuration values with defaults
 func (c *Config) fillDefaults() {
 	defaults := DefaultConfig()
+	
+	// Fill in keybindings if missing
+	if c.Keybindings.ScrollUp == nil { c.Keybindings.ScrollUp = defaults.Keybindings.ScrollUp }
+	if c.Keybindings.ScrollDown == nil { c.Keybindings.ScrollDown = defaults.Keybindings.ScrollDown }
+	if c.Keybindings.ScrollLeft == nil { c.Keybindings.ScrollLeft = defaults.Keybindings.ScrollLeft }
+	if c.Keybindings.ScrollRight == nil { c.Keybindings.ScrollRight = defaults.Keybindings.ScrollRight }
+	if c.Keybindings.PageUp == nil { c.Keybindings.PageUp = defaults.Keybindings.PageUp }
+	if c.Keybindings.PageDown == nil { c.Keybindings.PageDown = defaults.Keybindings.PageDown }
+	if c.Keybindings.GoToTop == nil { c.Keybindings.GoToTop = defaults.Keybindings.GoToTop }
+	if c.Keybindings.GoToBottom == nil { c.Keybindings.GoToBottom = defaults.Keybindings.GoToBottom }
+	if c.Keybindings.StartSearch == nil { c.Keybindings.StartSearch = defaults.Keybindings.StartSearch }
+	if c.Keybindings.NextMatch == nil { c.Keybindings.NextMatch = defaults.Keybindings.NextMatch }
+	if c.Keybindings.PrevMatch == nil { c.Keybindings.PrevMatch = defaults.Keybindings.PrevMatch }
+	if c.Keybindings.ClearSearch == nil { c.Keybindings.ClearSearch = defaults.Keybindings.ClearSearch }
+	if c.Keybindings.Quit == nil { c.Keybindings.Quit = defaults.Keybindings.Quit }
+	if c.Keybindings.ShowHelp == nil { c.Keybindings.ShowHelp = defaults.Keybindings.ShowHelp }
 	
 	if c.Colors.Heading1 == "" { c.Colors.Heading1 = defaults.Colors.Heading1 }
 	if c.Colors.Heading2 == "" { c.Colors.Heading2 = defaults.Colors.Heading2 }

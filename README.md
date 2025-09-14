@@ -11,6 +11,7 @@ A standalone Markdown renderer for the terminal with integrated search functiona
 - 🔍 **Full-text search** with highlighting (Ctrl+F)
 - ⌨️ Vim-like keybindings with Colemak-DH support
 - ❓ **Interactive help popup** - Press `?` to see all keybindings
+- ⚙️ **Configurable keybindings** - Customize navigation keys via config file
 - 🎨 Syntax highlighting for code blocks
 - 🎨 **Customizable colors** via configuration file
 - 📊 Table rendering support
@@ -55,9 +56,9 @@ mdrs --init-config              # Create default config file
 
 ## Keybindings
 
-Press `?` at any time to display an interactive help popup with all available keybindings.
+Press `?` at any time to display an interactive help popup with all available keybindings. All keybindings are configurable via the config file (see Configuration section).
 
-### Navigation
+### Default Navigation Keys
 | Key | Action |
 |-----|--------|
 | `↑` `k` `i` | Scroll up |
@@ -71,7 +72,7 @@ Press `?` at any time to display an interactive help popup with all available ke
 | `?` | Show help popup |
 | `q` `Ctrl+C` | Quit |
 
-### Search
+### Default Search Keys
 | Key | Action |
 |-----|--------|
 | `Ctrl+F` `/` | Start search |
@@ -84,11 +85,41 @@ Search highlights all matches (current match in bright yellow, others in yellow 
 
 ## Configuration
 
-Customize colors by creating a config file at `~/.config/mdrs/config.json`:
+Customize colors and keybindings by creating a config file at `~/.config/mdrs/config.json`:
 
 ```bash
 mdrs --init-config      # Create default config
 mdrs --config-path      # Show config location
+```
+
+### Keybinding Customization
+
+Configure your preferred keybindings in the config file. Each action can have multiple keys assigned. Supported key formats:
+- Single characters: `"k"`, `"j"`, `"h"`, `"l"`
+- Arrow keys: `"Up"`, `"Down"`, `"Left"`, `"Right"`
+- Special keys: `"PageUp"`, `"PageDown"`, `"Space"`, `"Enter"`, `"Escape"`
+- Control combinations: `"C-f"`, `"C-c"`, `"C-n"`, `"C-p"`
+
+Example keybinding configuration:
+```json
+{
+  "keybindings": {
+    "scroll_up": ["k", "i", "Up", "C-p"],
+    "scroll_down": ["j", "e", "Down", "C-n"],
+    "scroll_left": ["h", "Left"],
+    "scroll_right": ["l", "o", "Right"],
+    "page_up": ["PageUp"],
+    "page_down": ["PageDown", "Space"],
+    "go_to_top": ["g"],
+    "go_to_bottom": ["G"],
+    "start_search": ["/", "C-f"],
+    "next_match": ["n"],
+    "prev_match": ["N"],
+    "clear_search": ["Escape"],
+    "quit": ["q", "C-c"],
+    "show_help": ["?"]
+  }
+}
 ```
 
 ### Color Customization
@@ -113,9 +144,14 @@ cp themes/dracula.json ~/.config/mdrs/config.json
 cp themes/solarized-dark.json ~/.config/mdrs/config.json
 ```
 
-Example theme structure:
+Example complete config with custom colors and keybindings:
 ```json
 {
+  "keybindings": {
+    "scroll_up": ["k", "Up"],
+    "scroll_down": ["j", "Down"],
+    "quit": ["q", "C-c"]
+  },
   "colors": {
     "heading1": "#bd93f9",
     "bold": "#f8f8f2",

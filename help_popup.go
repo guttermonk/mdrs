@@ -11,11 +11,13 @@ const helpPopupView = "helpPopup"
 
 type helpPopup struct {
 	active bool
+	config *Config
 }
 
-func newHelpPopup() *helpPopup {
+func newHelpPopup(config *Config) *helpPopup {
 	return &helpPopup{
 		active: false,
+		config: config,
 	}
 }
 
@@ -90,33 +92,38 @@ func (hp *helpPopup) layout(g *gocui.Gui) error {
 func (hp *helpPopup) buildHelpContent() string {
 	var sb strings.Builder
 
+	// Helper function to format key list
+	formatKeys := func(keys []string) string {
+		return strings.Join(keys, ", ")
+	}
+
 	// Navigation section
 	sb.WriteString(" NAVIGATION\n")
 	sb.WriteString(" ═══════════════════════════════════════════════\n")
-	sb.WriteString("  k, i, ↑, Ctrl+P    Move up\n")
-	sb.WriteString("  j, e, ↓, Ctrl+N    Move down\n")
-	sb.WriteString("  h, ←               Move left\n")
-	sb.WriteString("  l, o, →            Move right\n")
-	sb.WriteString("  PgUp               Page up\n")
-	sb.WriteString("  PgDn, Space        Page down\n")
-	sb.WriteString("  g                  Go to top\n")
-	sb.WriteString("  G                  Go to bottom\n")
+	sb.WriteString(fmt.Sprintf("  %-20s Move up\n", formatKeys(hp.config.Keybindings.ScrollUp)))
+	sb.WriteString(fmt.Sprintf("  %-20s Move down\n", formatKeys(hp.config.Keybindings.ScrollDown)))
+	sb.WriteString(fmt.Sprintf("  %-20s Move left\n", formatKeys(hp.config.Keybindings.ScrollLeft)))
+	sb.WriteString(fmt.Sprintf("  %-20s Move right\n", formatKeys(hp.config.Keybindings.ScrollRight)))
+	sb.WriteString(fmt.Sprintf("  %-20s Page up\n", formatKeys(hp.config.Keybindings.PageUp)))
+	sb.WriteString(fmt.Sprintf("  %-20s Page down\n", formatKeys(hp.config.Keybindings.PageDown)))
+	sb.WriteString(fmt.Sprintf("  %-20s Go to top\n", formatKeys(hp.config.Keybindings.GoToTop)))
+	sb.WriteString(fmt.Sprintf("  %-20s Go to bottom\n", formatKeys(hp.config.Keybindings.GoToBottom)))
 	sb.WriteString("\n")
 
 	// Search section
 	sb.WriteString(" SEARCH\n")
 	sb.WriteString(" ═══════════════════════════════════════════════\n")
-	sb.WriteString("  /, Ctrl+F          Start search\n")
-	sb.WriteString("  n                  Next match\n")
-	sb.WriteString("  N                  Previous match\n")
-	sb.WriteString("  ESC                Clear search\n")
+	sb.WriteString(fmt.Sprintf("  %-20s Start search\n", formatKeys(hp.config.Keybindings.StartSearch)))
+	sb.WriteString(fmt.Sprintf("  %-20s Next match\n", formatKeys(hp.config.Keybindings.NextMatch)))
+	sb.WriteString(fmt.Sprintf("  %-20s Previous match\n", formatKeys(hp.config.Keybindings.PrevMatch)))
+	sb.WriteString(fmt.Sprintf("  %-20s Clear search\n", formatKeys(hp.config.Keybindings.ClearSearch)))
 	sb.WriteString("\n")
 
 	// General section
 	sb.WriteString(" GENERAL\n")
 	sb.WriteString(" ═══════════════════════════════════════════════\n")
-	sb.WriteString("  ?                  Show this help\n")
-	sb.WriteString("  q, Ctrl+C          Quit\n")
+	sb.WriteString(fmt.Sprintf("  %-20s Show this help\n", formatKeys(hp.config.Keybindings.ShowHelp)))
+	sb.WriteString(fmt.Sprintf("  %-20s Quit\n", formatKeys(hp.config.Keybindings.Quit)))
 	sb.WriteString("\n")
 
 	// Notes section
