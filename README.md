@@ -10,6 +10,7 @@ A standalone Markdown renderer for the terminal with integrated search functiona
 - 📖 Beautiful Markdown rendering in your terminal
 - 🔍 **Full-text search** with highlighting (Ctrl+F)
 - ⌨️ Vim-like keybindings with Colemak-DH support
+- ❓ **Interactive help popup** - Press `?` to see all keybindings
 - 🎨 Syntax highlighting for code blocks
 - 🎨 **Customizable colors** via configuration file
 - 📊 Table rendering support
@@ -54,6 +55,8 @@ mdrs --init-config              # Create default config file
 
 ## Keybindings
 
+Press `?` at any time to display an interactive help popup with all available keybindings.
+
 ### Navigation
 | Key | Action |
 |-----|--------|
@@ -65,6 +68,7 @@ mdrs --init-config              # Create default config file
 | `PgDn` `Space` | Page down |
 | `g` | Go to top |
 | `G` | Go to bottom |
+| `?` | Show help popup |
 | `q` `Ctrl+C` | Quit |
 
 ### Search

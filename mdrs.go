@@ -131,6 +131,9 @@ type ui struct {
 	
 	// configuration
 	config          *Config
+	
+	// help popup
+	help            *helpPopup
 }
 
 func newUi(g *gocui.Gui) (*ui, error) {
@@ -144,6 +147,7 @@ func newUi(g *gocui.Gui) (*ui, error) {
 		width:  -1,
 		search: NewSearchState(),
 		config: config,
+		help:   newHelpPopup(),
 	}
 
 	g.SetManagerFunc(result.layout)
@@ -185,6 +189,14 @@ func newUi(g *gocui.Gui) (*ui, error) {
 		{searchView, gocui.KeyEsc, gocui.ModNone, result.cancelSearch},
 		{searchView, gocui.KeyCtrlC, gocui.ModNone, result.cancelSearch},
 		{searchView, gocui.KeyCtrlG, gocui.ModNone, result.cancelSearch},
+		
+		// Help keybinding
+		{renderView, '?', gocui.ModNone, result.showHelp},
+	}
+	
+	// Register help popup keybindings
+	if err := result.help.keybindings(g); err != nil {
+		return nil, err
 	}
 
 	for _, kb := range result.keybindings {
@@ -204,6 +216,16 @@ func (ui *ui) setContent(content []byte) {
 
 func (ui *ui) layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
+	
+	// Handle help popup first (it should be on top)
+	if err := ui.help.layout(g); err != nil {
+		return err
+	}
+	
+	// If help is active, don't update other views
+	if ui.help.isActive() {
+		return nil
+	}
 
 	// Status bar at the bottom
 	statusY := maxY - 1
@@ -451,6 +473,11 @@ func (ui *ui) goToBottom(g *gocui.Gui, v *gocui.View) error {
 	_, maxY := g.Size()
 	ui.YOffset = ui.lines - maxY + 1
 	ui.YOffset = max(ui.YOffset, 0)
+	return nil
+}
+
+func (ui *ui) showHelp(g *gocui.Gui, v *gocui.View) error {
+	ui.help.show()
 	return nil
 }
 
