@@ -12,7 +12,7 @@
         pkgs = nixpkgs.legacyPackages.${system};
         
         # Version information
-        version = "0.1.0";
+        version = "0.2.0";
         gitCommit = if (self ? rev) then self.rev else "dirty";
         
       in
@@ -39,9 +39,10 @@
               "-X main.GitExactTag=v${version}"
             ];
             
-            # Rename binary from mdr to mdrs if needed
+            # Ensure binary is named mdrs (Go may name it based on directory/module)
+            # This is a safety check in case the build process creates 'mdr'
             postInstall = ''
-              if [ -f $out/bin/mdr ]; then
+              if [ -f $out/bin/mdr ] && [ ! -f $out/bin/mdrs ]; then
                 mv $out/bin/mdr $out/bin/mdrs
               fi
             '';
