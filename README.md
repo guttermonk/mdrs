@@ -112,4 +112,4 @@ MIT
 
 ## Origin
 
-This tool is an offspring of the [git-bug](https://github.com/MichaelMure/git-bug) project.
+This tool is an offspring of the [mdr](https://github.com/MichaelMure/mdr), which was the offspring of the [git-bug](https://github.com/MichaelMure/git-bug) project.
