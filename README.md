@@ -72,9 +72,9 @@ curl example.com/file.md | mdrs # Pipe from network
 | `Enter` | Execute search |
 | `n` | Next match |
 | `N` | Previous match |
-| `ESC` | Cancel search |
+| `ESC` | Clear search/Cancel |
 
-Search highlights all matches (current match in bright yellow, others in yellow text) and shows match count in the status bar.
+Search highlights all matches (current match in bright yellow, others in yellow text) and shows match count in the status bar. Press `ESC` after searching to clear all highlighting and exit search mode.
 
 ## Development
 

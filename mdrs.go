@@ -133,6 +133,7 @@ func newUi(g *gocui.Gui) (*ui, error) {
 		{renderView, '/', gocui.ModNone, result.startSearch},
 		{renderView, 'n', gocui.ModNone, result.nextMatch},
 		{renderView, 'N', gocui.ModNone, result.prevMatch},
+		{renderView, gocui.KeyEsc, gocui.ModNone, result.clearSearch},
 		{searchView, gocui.KeyEnter, gocui.ModNone, result.executeSearch},
 		{searchView, gocui.KeyEsc, gocui.ModNone, result.cancelSearch},
 		{searchView, gocui.KeyCtrlC, gocui.ModNone, result.cancelSearch},
@@ -297,6 +298,16 @@ func (ui *ui) cancelSearch(g *gocui.Gui, v *gocui.View) error {
 	ui.search.Clear()
 	v.Clear()
 	v.SetCursor(0, 0)
+	
+	// Force a re-render to clear highlights
+	ui.width = -1
+	
+	return nil
+}
+
+func (ui *ui) clearSearch(g *gocui.Gui, v *gocui.View) error {
+	ui.searchActive = false
+	ui.search.Clear()
 	
 	// Force a re-render to clear highlights
 	ui.width = -1
