@@ -100,7 +100,7 @@ func newUi(g *gocui.Gui) (*ui, error) {
 	}
 
 	g.SetManagerFunc(result.layout)
-	g.Cursor = true
+	g.Cursor = false
 	g.InputEsc = true
 
 	result.keybindings = []keybinding{
@@ -210,6 +210,7 @@ func (ui *ui) layout(g *gocui.Gui) error {
 
 	// Search input view
 	if ui.searchActive {
+		g.Cursor = true
 		searchY := maxY - 2
 		sv, err := g.SetView(searchView, 0, searchY, maxX-1, searchY+2, 0)
 		if err != nil {
@@ -230,6 +231,7 @@ func (ui *ui) layout(g *gocui.Gui) error {
 		// Set cursor to end of search term
 		sv.SetCursor(len(sv.Buffer()), 0)
 	} else {
+		g.Cursor = false
 		g.DeleteView(searchView)
 		_, err = g.SetCurrentView(renderView)
 		if err != nil {
