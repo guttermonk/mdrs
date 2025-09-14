@@ -1,6 +1,6 @@
 # mdrs - Markdown Renderer & Search
 
-[![GitHub license](https://img.shields.io/github/license/guttermonk/mdrs.svg)](https://github.com/guttermonk/mdrs/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/guttermonk/mdrs.svg?style=for-the-badge)](https://github.com/guttermonk/mdrs/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/guttermonk/mdrs?style=for-the-badge)](https://github.com/guttermonk/mdrs/stargazers)
 
 A standalone Markdown renderer for the terminal with integrated search functionality.
