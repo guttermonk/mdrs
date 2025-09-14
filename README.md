@@ -10,7 +10,7 @@ A standalone Markdown renderer for the terminal with integrated search functiona
 
 - 📖 Beautiful Markdown rendering in your terminal
 - 🔍 **Full-text search** with highlighting (Ctrl+F)
-- ⌨️ Vim-like keybindings
+- ⌨️ Vim-like keybindings with Colemak-DH support
 - 🎨 Syntax highlighting for code blocks
 - 📊 Table rendering support
 - ❄️ Native NixOS support with flakes
@@ -56,10 +56,10 @@ curl example.com/file.md | mdrs # Pipe from network
 ### Navigation
 | Key | Action |
 |-----|--------|
-| `↑` `k` | Scroll up |
-| `↓` `j` | Scroll down |
+| `↑` `k` `i` | Scroll up |
+| `↓` `j` `e` | Scroll down |
 | `←` `h` | Scroll left |
-| `→` `l` | Scroll right |
+| `→` `l` `o` | Scroll right |
 | `PgUp` | Page up |
 | `PgDn` `Space` | Page down |
 | `g` | Go to top |

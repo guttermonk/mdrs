@@ -108,16 +108,19 @@ func newUi(g *gocui.Gui) (*ui, error) {
 		{"", gocui.KeyCtrlC, gocui.ModNone, result.quit},
 		{renderView, 'q', gocui.ModNone, result.quit},
 		
-		// Navigation keybindings
+		// Navigation keybindings (Vim and Colemak-DH)
 		{renderView, 'k', gocui.ModNone, result.up},
+		{renderView, 'i', gocui.ModNone, result.up},  // Colemak-DH
 		{renderView, gocui.KeyCtrlP, gocui.ModNone, result.up},
 		{renderView, gocui.KeyArrowUp, gocui.ModNone, result.up},
 		{renderView, 'j', gocui.ModNone, result.down},
+		{renderView, 'e', gocui.ModNone, result.down},  // Colemak-DH
 		{renderView, gocui.KeyCtrlN, gocui.ModNone, result.down},
 		{renderView, gocui.KeyArrowDown, gocui.ModNone, result.down},
 		{renderView, 'h', gocui.ModNone, result.left},
 		{renderView, gocui.KeyArrowLeft, gocui.ModNone, result.left},
 		{renderView, 'l', gocui.ModNone, result.right},
+		{renderView, 'o', gocui.ModNone, result.right},  // Colemak-DH
 		{renderView, gocui.KeyArrowRight, gocui.ModNone, result.right},
 		{renderView, gocui.KeyPgup, gocui.ModNone, result.pageUp},
 		{renderView, gocui.KeyPgdn, gocui.ModNone, result.pageDown},
