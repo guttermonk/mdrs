@@ -25,8 +25,7 @@ type SearchMatch struct {
 }
 
 // NewSearchState creates a new search state
-func NewSearchState() *SearchState {
-	config, _ := LoadConfig() // Load config, use defaults if error
+func NewSearchState(config *Config) *SearchState {
 	return &SearchState{
 		active:        false,
 		term:          "",

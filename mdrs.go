@@ -145,7 +145,7 @@ func newUi(g *gocui.Gui) (*ui, error) {
 	
 	result := &ui{
 		width:  -1,
-		search: NewSearchState(),
+		search: NewSearchState(config),
 		config: config,
 		help:   newHelpPopup(config),
 	}
